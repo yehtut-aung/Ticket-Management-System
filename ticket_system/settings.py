@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-w=q9k4sgy#=5(@7dcln4ibv#m@3r0evgk%&o3!jtq5i0ao2bbd
 DEBUG = True
 
 # Updated 6_March_2026
-ALLOWED_HOSTS = ['https://ticket-management-system-7kqo.onrender.com', 'localhost','127.0.0.1']
+ALLOWED_HOSTS = ['ticket-management-system-7kqo.onrender.com', 'localhost','127.0.0.1']
 
 
 # Application definition
