@@ -1,3 +1,18 @@
 from django.contrib import admin
+from .models import Ticket, TicketComment
 
-# Register your models here.
+class TicketCommentInline(admin.TabularInline):
+    model = TicketComment
+    extra = 0
+
+@admin.register(Ticket)
+class TicketAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title', 'created_by', 'assigned_to', 'status', 'priority', 'created_at')
+    list_filter = ('status', 'priority', 'created_at')
+    search_fields = ('title', 'description')
+    inlines = [TicketCommentInline]
+
+@admin.register(TicketComment)
+class TicketCommentAdmin(admin.ModelAdmin):
+    list_display = ('ticket', 'user', 'created_at')
+    list_filter = ('created_at',)
