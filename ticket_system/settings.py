@@ -141,3 +141,20 @@ LOGOUT_REDIRECT_URL = 'login'
 # Add this for security in production by deepseek
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = False  # Set to True if you have HTTPS
+
+if 'RENDER' in os.environ:
+    # On Render - use PostgreSQL
+    DATABASES = {
+        'default': dj_database_url.config(
+            conn_max_age=600,
+            ssl_require=True
+        )
+    }
+else:
+    # Local development - use SQLite
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
