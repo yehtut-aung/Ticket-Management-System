@@ -25,7 +25,7 @@
             border-radius: 10px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.2);
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
         }
         
         h2 {
@@ -37,6 +37,12 @@
         
         .form-group {
             margin-bottom: 20px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
         }
         
         label {
@@ -94,13 +100,14 @@
             text-decoration: underline;
         }
         
-        .error {
-            background: #fee;
+        .error, .errorlist {
             color: #c33;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            border-left: 4px solid #c33;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+        
+        .errorlist {
+            list-style: none;
         }
         
         .success {
@@ -119,11 +126,72 @@
             display: block;
         }
         
-        .errorlist {
-            color: #c33;
-            list-style: none;
-            margin-top: 5px;
-            font-size: 13px;
+        /* Role selection styling */
+        .role-selection {
+            margin: 25px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .role-selection > label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            display: block;
+            font-size: 16px;
+        }
+        
+        .role-options {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .role-option {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .role-option input[type="radio"] {
+            display: none;
+        }
+        
+        .role-option label {
+            display: block;
+            padding: 15px 20px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 0;
+            font-weight: 500;
+        }
+        
+        .role-option input[type="radio"]:checked + label {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .role-option label:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 500px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .role-options {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -142,24 +210,118 @@
         <form method="post">
             {% csrf_token %}
             
-            {% for field in form %}
+            {% if form.non_field_errors %}
+                <div class="error">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+            
+            <!-- Username -->
+            <div class="form-group">
+                <label>Username:</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.username.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {% if form.username.help_text %}
+                    <small class="helptext">{{ form.username.help_text }}</small>
+                {% endif %}
+            </div>
+            
+            <!-- First Name & Last Name Row -->
+            <div class="form-row">
                 <div class="form-group">
-                    <label>{{ field.label }}:</label>
-                    {{ field }}
-                    {% if field.help_text %}
-                        <small class="helptext">{{ field.help_text }}</small>
-                    {% endif %}
-                    {% if field.errors %}
+                    <label>First Name:</label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
                         <ul class="errorlist">
-                            {% for error in field.errors %}
+                            {% for error in form.first_name.errors %}
                                 <li>{{ error }}</li>
                             {% endfor %}
                         </ul>
                     {% endif %}
                 </div>
-            {% endfor %}
+                
+                <div class="form-group">
+                    <label>Last Name:</label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.last_name.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
             
-            <button type="submit">Sign Up</button>
+            <!-- Email -->
+            <div class="form-group">
+                <label>Email:</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.email.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            
+            <!-- Password -->
+            <div class="form-group">
+                <label>Password:</label>
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.password1.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {% if form.password1.help_text %}
+                    <small class="helptext">{{ form.password1.help_text }}</small>
+                {% endif %}
+            </div>
+            
+            <!-- Confirm Password -->
+            <div class="form-group">
+                <label>Confirm Password:</label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.password2.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            
+            <!-- Role Selection -->
+            <div class="role-selection">
+                <label>👤 Register as:</label>
+                <div class="role-options">
+                    {% for radio in form.role %}
+                        <div class="role-option">
+                            {{ radio.tag }}
+                            <label for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if form.role.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.role.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            
+            <button type="submit">Create Account</button>
         </form>
         
         <div class="links">
