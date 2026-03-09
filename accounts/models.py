@@ -14,7 +14,7 @@ class UserProfile(models.Model):
     role = models.CharField(max_length=20, choices=USER_ROLES, default='customer')
     phone = models.CharField(max_length=15, blank=True, null=True)
     department = models.CharField(max_length=100, blank=True, null=True)
-    profile_pic = models.ImageField(upload_to='profiles/', blank=True, null=True)
+    #profile_pic = models.ImageField(upload_to='profiles/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
